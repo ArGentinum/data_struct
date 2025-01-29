@@ -7,35 +7,24 @@ void swap(int *x,int *y){
 }
 
 int qsort(int *a,int max){
-    int l,r,l_switch=0,r_switch=0,key=a[max-1],l_index=0,r_index=max-1;
+    int l,r,key=a[max-1],l_index=0,r_index=max-2;
     swap(&a[0],&a[max-1]);
-    while(l_index<r_index){
-        if(key<a[l_index]){
-        l=a[l_index];
-        l_switch=1;
-        
+    while(l_index<=r_index){
+        while(key>a[l_index]){
+            ++l_index;
+            printf("left index:%d\n",l_index);
         }
-        else{
-        ++l_index;
-        printf("%d\n",l_index);
+
+        while(key<a[r_index]){
+            --r_index;
+            printf("right index:%d\n",r_index);
         }
-        
-        if(key>a[r_index]){
-            r=a[r_index];
-            r_switch=1;
-        }
-        else
-        --r_index;
-        
-        if(l_switch==r_switch==1){
-            swap(&a[l_index],&a[r_index]);
-            l_switch=0;
-            r_switch=0;
-        }
+        swap(&a[l_index],&a[r_index]);
+        l_index=0;
+        r_index=max-2;
     }
     return l_index;
 }
-//5,1,9,6,0,7
 int main() {
     // Write C code here
     int a[]={7,1,9,6,0,5},max=sizeof(a)/sizeof(a[0]),index;
