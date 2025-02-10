@@ -30,7 +30,6 @@ int qsort(int *a,int max){
 int main() {
     // Write C code here
     int a[]={0,9,7,1,6,-1,2},max=sizeof(a)/sizeof(a[0]),index;
-    int a[]={9,6,7,1,0,-1,2},max=sizeof(a)/sizeof(a[0]),index;
     index=qsort(a,max);
     printf("%d\n",index);
     return 0;
