@@ -4,127 +4,103 @@
 void push(char);
 void pop_till_open();
 void pop_till_proper(char);
-void pop_till_open();
-void prec(char,char);
+void precedence(char, char);
 void output(char);
 void pop_everything();
 void parse(char);
 void pop();
 void inf_to_post();
 
+char stack[100], inf[100];
+int top = -1;
 
-char stack[100],inf[100],precedence[]={'^','0','/','*','0','-','+'};
-int prec_size,inf_size,scan_prec,stack_prec;
-int top=-1;
+// Function to determine precedence of operators
+int get_precedence(char op) {
+    switch (op) {
+        case '+': case '-': return 1;
+        case '*': case '/': return 2;
+        case '^': return 3;  // Exponentiation has the highest precedence
+        default: return -1;  // Lower precedence for non-operators
+    }
+}
 
-
-
-
-
-void main(){
-    printf("enter the infix expresssion:");
-    fgets(inf,sizeof(inf),stdin);
-    inf_size=strlen(inf);
-    prec_size=strlen(precedence);
-    //printf("%d",inf_size);
+void main() {
+    printf("Enter the infix expression: ");
+    scanf("%s", inf);
     inf_to_post();
 }
 
-void output(char x){
-    printf("%c",x);
+void output(char x) {
+    printf("%c", x);
 }
 
-
-void push(char x){
-++top;
-stack[top]=x;
+void push(char x) {
+    stack[++top] = x;
 }
 
-void pop_till_open(){
-while(stack[top]!='('){
-    output(stack[top]);
-    pop();
-}
+void pop() {
+    if (top != -1) 
+        --top;
 }
 
-void pop_till_proper(char x){
-output(stack[top]);
-pop();
-if(top==0)
-push(x);
-
-else
-parse(char x);
-
-
+void pop_till_open() {
+    while (top != -1 && stack[top] != '(') {
+        output(stack[top]);
+        pop();
+    }
+    if (top != -1) pop();  // Remove '(' from stack
 }
 
-void pop(){
---top;    
+void pop_till_proper(char scanned_char) {
+    while (top != -1 && get_precedence(stack[top]) >= get_precedence(scanned_char)) {
+        output(stack[top]);
+        pop();
+    }
+    push(scanned_char);
 }
 
+void pop_everything() {
+    while (top != -1) {
+        output(stack[top]);
+        pop();
+    }
+}
 
-
-void prec(char stack_top,char scan_char){
-    int i=0;
-    while(i<prec_size){
-        if(stack_top==precedence[i])
-        stack_prec=i;
-
-        if(scan_char==precedence[i])
-        scan_prec=i;
+void parse(char scanned_char) {
+    if (top == -1 || stack[top] == '(') {
+        push(scanned_char);
+        return;
     }
 
+    if (get_precedence(scanned_char) > get_precedence(stack[top])) {
+        push(scanned_char);
+    } else {
+        pop_till_proper(scanned_char);
+    }
 }
 
-void pop_everything(){
-while(top!=-1){
-output(stack[top]);
-pop();
-}
-}
-
-
-
-void parse(char x){
-
-    //if stack is empty push the operator
-    if (top==-1)
-    push(char x)
-
-    prec(stack[top],x);
-    //if scanned operator has higher prec than stack[top] operator,push[]
-    else if(scan_prec-stack_prec>=2)
-    push();
-
-    else
-    pop_till_proper();
-}
-
-}
-
-void inf_to_post(){
-    int i=0;
-    while(i<inf_size){
-        if((inf[i]>=65&&inf[i]<=90)||(inf[i]>=97&&inf[i]<=122))
-        output(inf[i]);
-
-        else if(inf[i]=='(')
-        push(inf[i]);
-
-        else if(inf[i]==')');
-        pop_till_open();
-
-        else
-        parse(inf[i]);
-
-        ++i;
-
-
+void inf_to_post() {
+    int i = 0;
+    while (inf[i] != '\0') {
+        // If operand, output directly
+        if ((inf[i] >= 'A' && inf[i] <= 'Z') || (inf[i] >= 'a' && inf[i] <= 'z')) {
+            output(inf[i]);
+        }
+        // If opening parenthesis, push to stack
+        else if (inf[i] == '(') {
+            push(inf[i]);
+        }
+        // If closing parenthesis, pop until '('
+        else if (inf[i] == ')') {
+            pop_till_open();
+        }
+        // If operator, check precedence and push/pop accordingly
+        else {
+            parse(inf[i]);
+        }
+        i++;
     }
 
-    if(top!=-1)
+    // Pop remaining operators
     pop_everything();
 }
-
-
