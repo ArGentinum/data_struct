@@ -46,8 +46,12 @@ else{
     }
 
     else{
+        if(root->lchild!=NULL)
         enqueue(root->lchild);
+
+        if(root->rchild!=NULL)
         enqueue(root->rchild);
+    
         dequeue_and_output();
         level_order_trav(queue[front]);
     }
